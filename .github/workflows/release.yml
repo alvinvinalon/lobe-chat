@@ -2,7 +2,7 @@ name: Release CI
 on:
   push:
     branches:
-      - main
+      - "never-run"
 
 jobs:
   release:
