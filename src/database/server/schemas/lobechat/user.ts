@@ -1,22 +1,13 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix  */
-import {
-  boolean,
-  integer,
-  jsonb,
-  pgTable,
-  text,
-} from 'drizzle-orm/pg-core';
+import { LobeChatPluginManifest } from '@lobehub/chat-plugin-sdk';
+import { boolean, jsonb, pgTable, primaryKey, text } from 'drizzle-orm/pg-core';
 
 import { DEFAULT_PREFERENCE } from '@/const/user';
+import { CustomPluginParams } from '@/types/tool/plugin';
 
-import { createdAt, timestamptz, updatedAt } from './_helpers';
+import { timestamps, timestamptz } from './_helpers';
 
-/**
- * This table stores users. Users are created in Clerk, then Clerk calls a
- * webhook at /api/webhook/clerk to inform this application a user was created.
- */
 export const users = pgTable('users', {
-  // The ID will be the user's ID from Clerk
   id: text('id').primaryKey().notNull(),
   username: text('username').unique(),
   email: text('email'),
@@ -36,65 +27,11 @@ export const users = pgTable('users', {
 
   preference: jsonb('preference').$defaultFn(() => DEFAULT_PREFERENCE),
 
-  createdAt: createdAt(),
-  updatedAt: updatedAt(),
+  ...timestamps,
 });
 
 export type NewUser = typeof users.$inferInsert;
 export type UserItem = typeof users.$inferSelect;
-
-export const userSubscriptions = pgTable('user_subscriptions', {
-  id: text('id').primaryKey().notNull(),
-  userId: text('user_id')
-    .references(() => users.id, { onDelete: 'cascade' })
-    .notNull(),
-  stripeId: text('stripe_id'),
-
-  currency: text('currency'),
-  pricing: integer('pricing'),
-  billingPaidAt: integer('billing_paid_at'),
-  billingCycleStart: integer('billing_cycle_start'),
-  billingCycleEnd: integer('billing_cycle_end'),
-
-  cancelAtPeriodEnd: boolean('cancel_at_period_end'),
-  cancelAt: integer('cancel_at'),
-
-  nextBilling: jsonb('next_billing'),
-
-  plan: text('plan'),
-  recurring: text('recurring'),
-
-  storageLimit: integer('storage_limit'),
-
-  status: integer('status'),
-  createdAt: createdAt(),
-  updatedAt: updatedAt(),
-});
-
-export type NewUserSubscription = typeof userSubscriptions.$inferInsert;
-export type UserSubscriptionItem = typeof userSubscriptions.$inferSelect;
-
-export const userBudgets = pgTable('user_budgets', {
-  id: text('id')
-    .primaryKey()
-    .references(() => users.id, { onDelete: 'cascade' })
-    .notNull(),
-
-  freeBudgetId: text('free_budget_id'),
-  freeBudgetKey: text('free_budget_key'),
-
-  subscriptionBudgetId: text('subscription_budget_id'),
-  subscriptionBudgetKey: text('subscription_budget_key'),
-
-  packageBudgetId: text('package_budget_id'),
-  packageBudgetKey: text('package_budget_key'),
-
-  createdAt: createdAt(),
-  updatedAt: updatedAt(),
-});
-
-export type NewUserBudgets = typeof userBudgets.$inferInsert;
-export type UserBudgetItem = typeof userBudgets.$inferSelect;
 
 export const userSettings = pgTable('user_settings', {
   id: text('id')
@@ -109,3 +46,26 @@ export const userSettings = pgTable('user_settings', {
   defaultAgent: jsonb('default_agent'),
   tool: jsonb('tool'),
 });
+
+export const installedPlugins = pgTable(
+  'user_installed_plugins',
+  {
+    userId: text('user_id')
+      .references(() => users.id, { onDelete: 'cascade' })
+      .notNull(),
+
+    identifier: text('identifier').notNull(),
+    type: text('type', { enum: ['plugin', 'customPlugin'] }).notNull(),
+    manifest: jsonb('manifest').$type<LobeChatPluginManifest>(),
+    settings: jsonb('settings'),
+    customParams: jsonb('custom_params').$type<CustomPluginParams>(),
+
+    ...timestamps,
+  },
+  (self) => ({
+    id: primaryKey({ columns: [self.userId, self.identifier] }),
+  }),
+);
+
+export type NewInstalledPlugin = typeof installedPlugins.$inferInsert;
+export type InstalledPluginItem = typeof installedPlugins.$inferSelect;
