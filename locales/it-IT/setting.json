@@ -84,8 +84,7 @@
         },
         "modalTitle": "Configurazione del modello personalizzato",
         "tokens": {
-          "title": "Numero massimo di token",
-          "unlimited": "illimitato"
+          "title": "Numero massimo di token"
         },
         "vision": {
           "extra": "Questa configurazione attiverà solo la capacità di caricamento delle immagini nell'app, se il riconoscimento è supportato dipende interamente dal modello stesso, ti invitiamo a testare l'usabilità del riconoscimento visivo di questo modello.",
@@ -98,6 +97,7 @@
       "title": "Utilizzo del modo di richiesta del client"
     },
     "fetcher": {
+      "clear": "Cancella il modello ottenuto",
       "fetch": "Ottenere l'elenco dei modelli",
       "fetching": "Recupero dell'elenco dei modelli in corso...",
       "latestTime": "Ultimo aggiornamento: {{time}}",
@@ -388,6 +388,11 @@
       "modelDesc": "Modello specificato per ottimizzare le domande degli utenti",
       "title": "Riscrittura delle domande del knowledge base"
     },
+    "thread": {
+      "label": "Modello di denominazione dei sottoargomenti",
+      "modelDesc": "Modello designato per la rinominazione automatica dei sottoargomenti",
+      "title": "Rinominazione automatica dei sottoargomenti"
+    },
     "title": "Assistente di sistema",
     "topic": {
       "label": "Modello di denominazione degli argomenti",
@@ -406,6 +411,7 @@
     "common": "Impostazioni comuni",
     "experiment": "实验",
     "llm": "Modello linguistico",
+    "provider": "Fornitore di servizi AI",
     "sync": "云端同步",
     "system-agent": "Assistente di sistema",
     "tts": "Servizio vocale"

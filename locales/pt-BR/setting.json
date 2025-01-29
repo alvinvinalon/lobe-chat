@@ -84,8 +84,7 @@
         },
         "modalTitle": "Configuração de Modelo Personalizado",
         "tokens": {
-          "title": "Número Máximo de Tokens",
-          "unlimited": "ilimitado"
+          "title": "Número Máximo de Tokens"
         },
         "vision": {
           "extra": "Esta configuração ativará apenas a configuração de upload de imagens dentro do aplicativo; a capacidade de reconhecimento depende totalmente do modelo em si. Por favor, teste a disponibilidade da capacidade de reconhecimento visual desse modelo.",
@@ -98,6 +97,7 @@
       "title": "Usar o modo de solicitação do cliente"
     },
     "fetcher": {
+      "clear": "Limpar o modelo obtido",
       "fetch": "Obter lista de modelos",
       "fetching": "Obtendo lista de modelos...",
       "latestTime": "Última atualização: {{time}}",
@@ -388,6 +388,11 @@
       "modelDesc": "Modelo designado para otimizar as perguntas dos usuários",
       "title": "Reescrita de perguntas do banco de dados"
     },
+    "thread": {
+      "label": "Modelo de Nomeação de Subtópicos",
+      "modelDesc": "Modelo designado para a renomeação automática de subtópicos",
+      "title": "Nomeação Automática de Subtópicos"
+    },
     "title": "Assistente do Sistema",
     "topic": {
       "label": "Modelo de Nomeação de Tópicos",
@@ -406,6 +411,7 @@
     "common": "Configurações Comuns",
     "experiment": "Experimento",
     "llm": "Modelo de Linguagem",
+    "provider": "Fornecedor de IA",
     "sync": "Sincronização na nuvem",
     "system-agent": "Assistente do Sistema",
     "tts": "Serviço de Voz"

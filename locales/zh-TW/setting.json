@@ -84,8 +84,7 @@
         },
         "modalTitle": "自定義模型配置",
         "tokens": {
-          "title": "最大 token 數",
-          "unlimited": "無限制"
+          "title": "最大 token 數"
         },
         "vision": {
           "extra": "此配置將僅開啟應用中的圖片上傳配置，是否支持識別完全取決於模型本身，請自行測試該模型的視覺識別能力可用性",
@@ -98,6 +97,7 @@
       "title": "使用客戶端請求模式"
     },
     "fetcher": {
+      "clear": "清除獲取的模型",
       "fetch": "獲取模型列表",
       "fetching": "正在獲取模型列表...",
       "latestTime": "上次更新時間：{{time}}",
@@ -388,6 +388,11 @@
       "modelDesc": "指定用於優化用戶提問的模型",
       "title": "知識庫提問重寫"
     },
+    "thread": {
+      "label": "子主題命名模型",
+      "modelDesc": "指定用於子主題自動重命名的模型",
+      "title": "子主題自動命名"
+    },
     "title": "系統助手",
     "topic": {
       "label": "話題命名模型",
@@ -406,6 +411,7 @@
     "common": "通用設置",
     "experiment": "實驗",
     "llm": "語言模型",
+    "provider": "AI 服務商",
     "sync": "雲端同步",
     "system-agent": "系統助手",
     "tts": "語音服務"

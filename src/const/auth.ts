@@ -28,7 +28,7 @@ export interface JWTPayload {
   /**
    * Represents the endpoint of provider
    */
-  endpoint?: string;
+  baseURL?: string;
 
   azureApiVersion?: string;
 
@@ -37,11 +37,10 @@ export interface JWTPayload {
   awsSecretAccessKey?: string;
   awsSessionToken?: string;
 
+  cloudflareBaseURLOrAccountID?: string;
+
   wenxinAccessKey?: string;
   wenxinSecretKey?: string;
-
-  sensenovaAccessKeyID?: string;
-  sensenovaAccessKeySecret?: string;
 
   /**
    * user id
