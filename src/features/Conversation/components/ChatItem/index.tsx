@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { Flexbox } from 'react-layout-kit';
 
 import { useAgentStore } from '@/store/agent';
-import { agentSelectors } from '@/store/agent/selectors';
+import { agentChatConfigSelectors } from '@/store/agent/selectors';
 import { useChatStore } from '@/store/chat';
 import { chatSelectors } from '@/store/chat/selectors';
 import { useUserStore } from '@/store/user';
@@ -26,9 +26,10 @@ import {
 import History from '../History';
 import { markdownElements } from '../MarkdownElements';
 import { InPortalThreadContext } from './InPortalThreadContext';
-import { processWithArtifact } from './utils';
+import { normalizeThinkTags, processWithArtifact } from './utils';
 
-const rehypePlugins = markdownElements.map((element) => element.rehypePlugin);
+const rehypePlugins = markdownElements.map((element) => element.rehypePlugin).filter(Boolean);
+const remarkPlugins = markdownElements.map((element) => element.remarkPlugin).filter(Boolean);
 
 const useStyles = createStyles(({ css, prefixCls }) => ({
   loading: css`
@@ -64,15 +65,12 @@ const Item = memo<ChatListItemProps>(
     disableEditing,
     inPortalThread = false,
   }) => {
-    const fontSize = useUserStore(userGeneralSettingsSelectors.fontSize);
     const { t } = useTranslation('common');
     const { styles, cx } = useStyles();
-    const [type = 'chat'] = useAgentStore((s) => {
-      const config = agentSelectors.currentAgentChatConfig(s);
-      return [config.displayMode];
-    });
 
+    const type = useAgentStore(agentChatConfigSelectors.displayMode);
     const item = useChatStore(chatSelectors.getMessageById(id), isEqual);
+    const fontSize = useUserStore(userGeneralSettingsSelectors.fontSize);
 
     const [
       isMessageLoading,
@@ -148,7 +146,9 @@ const Item = memo<ChatListItemProps>(
 
     // remove line breaks in artifact tag to make the ast transform easier
     const message =
-      !editing && item?.role === 'assistant' ? processWithArtifact(item?.content) : item?.content;
+      !editing && item?.role === 'assistant'
+        ? normalizeThinkTags(processWithArtifact(item?.content))
+        : item?.content;
 
     // ======================= Performance Optimization ======================= //
     // these useMemo/useCallback are all for the performance optimization
@@ -169,11 +169,22 @@ const Item = memo<ChatListItemProps>(
 
     const markdownProps = useMemo(
       () => ({
+        citations: item?.role === 'user' ? undefined : item?.search?.citations,
         components,
         customRender: markdownCustomRender,
-        rehypePlugins,
+        enableCustomFootnotes: item?.role === 'assistant',
+        rehypePlugins: item?.role === 'user' ? undefined : rehypePlugins,
+        remarkPlugins: item?.role === 'user' ? undefined : remarkPlugins,
+        showCitations:
+          item?.role === 'user'
+            ? undefined
+            : item?.search?.citations &&
+              // if the citations are all empty, we should not show the citations
+              item?.search?.citations.length > 0 &&
+              // if the citations's url and title are all the same, we should not show the citations
+              item?.search?.citations.every((item) => item.title !== item.url),
       }),
-      [components, markdownCustomRender],
+      [components, markdownCustomRender, item?.role, item?.search],
     );
 
     const onChange = useCallback((value: string) => updateMessageContent(id, value), [id]);
